@@ -62,7 +62,6 @@ Built to explore **data ingestion, normalization, analytics, and full-stack deve
 ## ⚙️ How to Run Locally
 
 ### 1️⃣ Clone the repo
-```bash
 git clone https://github.com/ParthMundhra/UFC.git
 cd UFC
 
