@@ -1,0 +1,147 @@
+/* Global reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Inter", system-ui, sans-serif;
+}
+
+body {
+  background-color: #0f0f0f;
+  color: #eaeaea;
+}
+
+/* Containers */
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 32px 20px;
+}
+
+/* Headings */
+h1 {
+  font-size: 32px;
+  margin-bottom: 20px;
+  letter-spacing: 0.5px;
+}
+
+h2 {
+  font-size: 22px;
+  margin-bottom: 12px;
+}
+
+/* Accent */
+.accent {
+  color: #e10600; /* UFC red */
+}
+
+/* Dropdown */
+select {
+  background-color: #1a1a1a;
+  color: #fff;
+  border: 1px solid #333;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+/* Buttons */
+button {
+  background-color: transparent;
+  color: #e10600;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+button:hover {
+  text-decoration: underline;
+}
+
+/* Card */
+.card {
+  background-color: #1a1a1a;
+  border-radius: 10px;
+  padding: 16px 20px;
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Rank number */
+.rank {
+  font-size: 18px;
+  font-weight: bold;
+  color: #e10600;
+  margin-right: 12px;
+}
+
+/* Fighter name */
+.fighter {
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.fighter:hover {
+  text-decoration: underline;
+}
+
+/* Meta */
+.meta {
+  font-size: 13px;
+  color: #aaa;
+}
+
+/* Section wrapper */
+.section {
+  margin-top: 48px;
+}
+
+/* Hero */
+.hero {
+  padding: 48px 32px;
+  border-radius: 16px;
+  background: linear-gradient(
+    135deg,
+    rgba(225, 6, 0, 0.15),
+    rgba(0, 0, 0, 0.6)
+  );
+  border: 1px solid #222;
+}
+
+/* Card hover polish */
+.card {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.stat-card {
+  background-color: #141414;
+  border: 1px solid #222;
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.stat-number {
+  font-size: 28px;
+  font-weight: bold;
+  color: #e10600;
+}
+
+.stat-label {
+  margin-top: 6px;
+  font-size: 13px;
+  color: #aaa;
+}
