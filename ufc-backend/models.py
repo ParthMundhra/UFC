@@ -25,6 +25,8 @@ class Fight(Base):
     round = Column(Integer)
     event = Column(String)
     fight_date = Column(Date)
+    division = Column(String)
+
 
     red_fighter = relationship("Fighter", foreign_keys=[fighter_red])
     blue_fighter = relationship("Fighter", foreign_keys=[fighter_blue])
