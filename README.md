@@ -36,7 +36,4 @@ This project is being built to learn **real-world web development** by working w
 ### Database
 - PostgreSQL
 
----
-
-## 📂 Project Structure
 
