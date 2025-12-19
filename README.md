@@ -53,27 +53,20 @@ Built to explore **data ingestion, normalization, analytics, and full-stack deve
 
 ---
 
-## 🖥️ Screenshots / Demo
-
-> _(Add screenshots or a short screen recording here)_
-
----
-
 ## ⚙️ How to Run Locally
 
 ### 1️⃣ Clone the repo
-```bash
-git clone https://github.com/ParthMundhra/UFC.git
-cd UFC
+- git clone https://github.com/ParthMundhra/UFC.git
+- cd UFC
 
 ### 2️⃣ Backend setup
-cd ufc-backend
-python -m venv venv
-venv\Scripts\activate
-pip install -r requirements.txt
-uvicorn main:app --reload
+- cd ufc-backend
+- python -m venv venv
+- venv\Scripts\activate
+- pip install -r requirements.txt
+- uvicorn main:app --reload
 
 ### 3️⃣ Fronted setup
-cd ufc-frontend
-npm install
-npm start
+- cd ufc-frontend
+- npm install
+- npm start
