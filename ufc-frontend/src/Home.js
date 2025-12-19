@@ -3,6 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { cache } from "./cache";
 
 
+import API_BASE from "./api";
+
+
+
 
 function Home() {
   const navigate = useNavigate();
@@ -21,6 +25,13 @@ function Home() {
     loading: true,
   });
 
+  useEffect(() => {
+  fetch(`${process.env.REACT_APP_API_BASE}/stats`)
+    .then(res => res.json())
+    .then(setStats)
+    .catch(() => setStats(null));
+}, []);
+
   // ---------------- FETCH NEWS (CACHED) ----------------
   useEffect(() => {
     if (cache.news) {
@@ -29,7 +40,7 @@ function Home() {
       return;
     }
 
-    fetch("http://127.0.0.1:8000/news")
+    fetch(`${API_BASE}/news`)
       .then((res) => res.json())
       .then((data) => {
         cache.news = data;
@@ -46,10 +57,10 @@ function Home() {
   useEffect(() => {
     async function loadStats() {
       try {
-        const fightsRes = await fetch("http://127.0.0.1:8000/fights");
+        const fightsRes = await fetch(`${API_BASE}/fights`);
         const fights = await fightsRes.json();
 
-        const eventsRes = await fetch("http://127.0.0.1:8000/events");
+        const eventsRes = await fetch(`${API_BASE}/events`);
         const events = await eventsRes.json();
 
         const divisions = new Set(

@@ -186,3 +186,20 @@ def fighter_image(name: str):
         return {"image": r.get("thumbnail", {}).get("source")}
     except:
         return {"image": None}
+    
+@app.get("/stats")
+def platform_stats(db: Session = Depends(get_db)):
+    total_fights = db.query(Fight).count()
+    total_events = db.query(Event).count()
+    total_divisions = (
+        db.query(Fight.division)
+        .distinct()
+        .filter(Fight.division.isnot(None))
+        .count()
+    )
+
+    return {
+        "fights": total_fights,
+        "events": total_events,
+        "divisions": total_divisions,
+    }
