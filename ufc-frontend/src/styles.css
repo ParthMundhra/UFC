@@ -145,3 +145,31 @@ button:hover {
   font-size: 13px;
   color: #aaa;
 }
+
+.fight-card {
+  padding: 14px 16px;
+  border: 1px solid #222;
+  border-radius: 10px;
+  margin-bottom: 14px;
+  background: linear-gradient(180deg, #0d0d0d, #080808);
+}
+
+.fight-title {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.fight-title span {
+  color: #e10600;
+  cursor: pointer;
+}
+
+.fight-title span:hover {
+  text-decoration: underline;
+}
+
+.fight-meta {
+  font-size: 13px;
+  color: #aaa;
+}

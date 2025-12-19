@@ -63,6 +63,7 @@ function Navbar() {
           >
             Fights
           </NavLink>
+
         </div>
       </div>
     </div>

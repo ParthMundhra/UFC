@@ -79,6 +79,11 @@ function FighterProfile({ fighter, onBack }) {
         <p className="meta">
           Record: {data.wins}–{data.losses} · {data.total_fights} fights
         </p>
+        <p className="meta">
+  Finishes: {data.finish_wins} · Decisions: {data.decision_wins} ·
+  Finish rate: {data.finish_rate}%
+</p>
+
       </div>
 
       {/* HISTORY */}

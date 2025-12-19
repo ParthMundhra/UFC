@@ -11,6 +11,7 @@ from io import StringIO
 from sqlalchemy.orm import Session
 from database import SessionLocal
 from models import Fighter, Fight
+from models import Event, Fight
 
 from datetime import datetime
 from bs4 import BeautifulSoup
@@ -21,19 +22,46 @@ def clean_fighter_name(name: str):
     return re.sub(r"\s*\(.*?\)", "", name).strip()
 
 EVENTS = [
+    # Recent PPVs
     {
-        "name": "UFC 280",
-        "url": "https://en.wikipedia.org/wiki/UFC_280"
+        "name": "UFC 282",
+        "url": "https://en.wikipedia.org/wiki/UFC_282"
     },
     {
-        "name": "UFC 281",
-        "url": "https://en.wikipedia.org/wiki/UFC_281"
+        "name": "UFC 283",
+        "url": "https://en.wikipedia.org/wiki/UFC_283"
+    },
+
+    # Recent Fight Nights
+    {
+        "name": "UFC Fight Night: Vera vs. Cruz",
+        "url": "https://en.wikipedia.org/wiki/UFC_on_ESPN:_Vera_vs._Cruz"
     },
     {
-        "name": "UFC 279",
-        "url": "https://en.wikipedia.org/wiki/UFC_279"
+        "name": "UFC Fight Night: Kattar vs. Allen",
+        "url": "https://en.wikipedia.org/wiki/UFC_Fight_Night:_Kattar_vs._Allen"
+    },
+    {
+        "name": "UFC Fight Night: Grasso vs. Araújo",
+        "url": "https://en.wikipedia.org/wiki/UFC_Fight_Night:_Grasso_vs._Ara%C3%BAjo"
     }
 ]
+
+
+def get_or_create_event(db: Session, name: str, date=None):
+    event = db.query(Event).filter(Event.name == name).first()
+    if event:
+        return event
+
+    event = Event(
+        name=name,
+        date=date
+    )
+    db.add(event)
+    db.commit()
+    db.refresh(event)
+    return event
+
 
 def scrape_event(url: str, event_name: str):
     headers = {
@@ -113,17 +141,19 @@ def get_or_create_fighter(db: Session, name: str):
     db.refresh(fighter)
     return fighter
 
-def fight_exists(db: Session, red_id, blue_id, event):
+def fight_exists(db: Session, red_id, blue_id, event, round_):
     return (
         db.query(Fight)
         .filter(
             Fight.fighter_red == red_id,
             Fight.fighter_blue == blue_id,
-            Fight.event == event
+            Fight.event == event,
+            Fight.round == round_
         )
         .first()
         is not None
     )
+
 
 
 URL = "https://en.wikipedia.org/wiki/UFC_280"
@@ -186,29 +216,49 @@ total_inserted = 0
 
 for event in EVENTS:
     print(f"\nScraping {event['name']}...")
-    fights = scrape_event(event["url"], event["name"])
+
+    try:
+        fights = scrape_event(event["url"], event["name"])
+    except Exception as e:
+        print(f"❌ Failed to scrape {event['name']}: {e}")
+        continue
+
+
+    # ✅ PHASE 2: ensure event exists
+    event_obj = get_or_create_event(
+        db,
+        name=event["name"],
+        date=fights[0]["date"] if fights else None
+    )
 
     for f in fights:
         red_fighter = get_or_create_fighter(db, f["red"])
         blue_fighter = get_or_create_fighter(db, f["blue"])
 
-        if fight_exists(db, red_fighter.id, blue_fighter.id, f["event"]):
+        if fight_exists(
+        db,
+        red_fighter.id,
+        blue_fighter.id,
+        f["event"],
+        f["round"]
+    ):
             continue
 
-        fight = Fight(
-        fighter_red=red_fighter.id,
-        fighter_blue=blue_fighter.id,
-        winner=red_fighter.id,
-        method=f["method"],
-        round=f["round"],
-        event=f["event"],
-        fight_date=f["date"],
-        division=f["division"]
-    )
 
+        fight = Fight(
+            fighter_red=red_fighter.id,
+            fighter_blue=blue_fighter.id,
+            winner=red_fighter.id,
+            method=f["method"],
+            round=f["round"],
+            event=event_obj.name,   # 🔑 event-aware
+            fight_date=f["date"],
+            division=f["division"]
+        )
 
         db.add(fight)
         total_inserted += 1
+
 
 db.commit()
 db.close()

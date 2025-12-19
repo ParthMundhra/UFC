@@ -3,7 +3,6 @@ import Home from "./Home";
 import DivisionRankings from "./DivisionRankings";
 import Fights from "./Fights";
 import Navbar from "./Navbar";
-
 function App() {
   return (
     <BrowserRouter>
@@ -12,7 +11,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/rankings" element={<DivisionRankings />} />
-        <Route path="/fights" element={<Fights />} />
+        <Route path="/fights" element={<Fights />} /> 
       </Routes>
     </BrowserRouter>
   );

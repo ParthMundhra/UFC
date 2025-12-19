@@ -2,12 +2,26 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { cache } from "./cache";
 
+
+
 function Home() {
   const navigate = useNavigate();
+
+  // NEWS STATE
   const [news, setNews] = useState(cache.news || []);
   const [loadingNews, setLoadingNews] = useState(!cache.news);
 
-  // Fetch news (cached)
+
+
+  // PLATFORM STATS STATE
+  const [stats, setStats] = useState({
+    fights: 0,
+    events: 0,
+    divisions: 0,
+    loading: true,
+  });
+
+  // ---------------- FETCH NEWS (CACHED) ----------------
   useEffect(() => {
     if (cache.news) {
       setNews(cache.news);
@@ -28,6 +42,39 @@ function Home() {
       });
   }, []);
 
+  // ---------------- FETCH PLATFORM STATS ----------------
+  useEffect(() => {
+    async function loadStats() {
+      try {
+        const fightsRes = await fetch("http://127.0.0.1:8000/fights");
+        const fights = await fightsRes.json();
+
+        const eventsRes = await fetch("http://127.0.0.1:8000/events");
+        const events = await eventsRes.json();
+
+        const divisions = new Set(
+          fights.map((f) => f.division).filter(Boolean)
+        );
+
+        setStats({
+          fights: fights.length,
+          events: events.length,
+          divisions: divisions.size,
+          loading: false,
+        });
+      } catch {
+        setStats({
+          fights: 0,
+          events: 0,
+          divisions: 0,
+          loading: false,
+        });
+      }
+    }
+
+    loadStats();
+  }, []);
+
   return (
     <div className="container">
       {/* HERO */}
@@ -37,8 +84,10 @@ function Home() {
         </h1>
 
         <p className="meta" style={{ maxWidth: "650px", marginTop: "12px" }}>
-          This project currently indexes UFC events from UFC 200 onward.
-The ingestion pipeline is designed to scale to the full UFC event history, but coverage is expanded incrementally to ensure data consistency and correctness.
+          UFC Analytics is a centralized platform that aggregates official UFC fight data
+across events and weight divisions, enabling structured exploration of fighters,
+matchups, and outcomes through a clean analytical interface.
+
         </p>
       </div>
 
@@ -135,17 +184,23 @@ The ingestion pipeline is designed to scale to the full UFC event history, but c
 
         <div className="stat-grid">
           <div className="stat-card">
-            <div className="stat-number">39</div>
+            <div className="stat-number">
+              {stats.loading ? "—" : stats.fights}
+            </div>
             <div className="stat-label">UFC Fights Indexed</div>
           </div>
 
           <div className="stat-card">
-            <div className="stat-number">3</div>
+            <div className="stat-number">
+              {stats.loading ? "—" : stats.events}
+            </div>
             <div className="stat-label">UFC Events Covered</div>
           </div>
 
           <div className="stat-card">
-            <div className="stat-number">8</div>
+            <div className="stat-number">
+              {stats.loading ? "—" : stats.divisions}
+            </div>
             <div className="stat-label">Weight Divisions Tracked</div>
           </div>
 
@@ -176,7 +231,7 @@ The ingestion pipeline is designed to scale to the full UFC event history, but c
             </a>
 
             <a
-              href="https://www.linkedin.com/"
+              href="https://www.linkedin.com/in/parthmundhra/"
               target="_blank"
               rel="noreferrer"
               className="accent"

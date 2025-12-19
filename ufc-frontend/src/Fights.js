@@ -1,70 +1,117 @@
 import { useEffect, useState } from "react";
+import FighterProfile from "./FighterProfile";
 
 function Fights() {
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState("");
   const [fights, setFights] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [selectedFighter, setSelectedFighter] = useState(null);
 
-  // Load all UFC events
+  // ---------------- LOAD EVENTS ----------------
   useEffect(() => {
     fetch("http://127.0.0.1:8000/events")
       .then((res) => res.json())
-      .then((data) => {
-        setEvents(data);
-        if (data.length > 0) setSelectedEvent(data[0]);
-      });
+      .then(setEvents)
+      .catch(() => setEvents([]));
   }, []);
 
-  // Load fights for selected event
+  // ---------------- LOAD FIGHTS ----------------
   useEffect(() => {
-    if (!selectedEvent) return;
-
     setLoading(true);
-    fetch(`http://127.0.0.1:8000/fights/event/${selectedEvent}`)
+
+    let url = "http://127.0.0.1:8000/fights";
+    if (selectedEvent) {
+      url += `?event=${encodeURIComponent(selectedEvent)}`;
+    }
+
+    fetch(url)
       .then((res) => res.json())
       .then((data) => {
         setFights(data);
         setLoading(false);
+      })
+      .catch(() => {
+        setFights([]);
+        setLoading(false);
       });
   }, [selectedEvent]);
 
+  // ---------------- FIGHTER PROFILE VIEW ----------------
+  if (selectedFighter) {
+    return (
+      <FighterProfile
+        fighter={selectedFighter}
+        onBack={() => setSelectedFighter(null)}
+      />
+    );
+  }
+
+  // ---------------- MAIN VIEW ----------------
   return (
-    <div className="container">
-      <h1>Fight Explorer</h1>
+    <div style={{ padding: "20px", maxWidth: "1000px", margin: "0 auto" }}>
+      <h2 style={{ marginBottom: "12px" }}>Fight Explorer</h2>
 
-      <select
-        value={selectedEvent}
-        onChange={(e) => setSelectedEvent(e.target.value)}
-        style={{ marginBottom: "24px" }}
-      >
-        {events.map((e) => (
-          <option key={e} value={e}>
-            {e}
-          </option>
-        ))}
-      </select>
+      {/* FILTERS */}
+      <div style={{ marginBottom: "16px" }}>
+        <select
+          value={selectedEvent}
+          onChange={(e) => setSelectedEvent(e.target.value)}
+          style={{
+            padding: "8px",
+            minWidth: "260px",
+            backgroundColor: "#111",
+            color: "#fff",
+            border: "1px solid #333",
+            borderRadius: "6px",
+          }}
+        >
+          <option value="">All Events</option>
+          {events.map((e) => (
+            <option key={e.name} value={e.name}>
+              {e.name}
+            </option>
+          ))}
+        </select>
+      </div>
 
-      {loading && <p className="meta">Loading fights...</p>}
+      {selectedEvent && (
+  <p style={{ color: "#888", marginBottom: "20px" }}>
+    Showing fights from <strong>{selectedEvent}</strong>
+  </p>
+)}
 
-      {!loading && fights.length === 0 && (
-        <p className="meta">No fights found for this event.</p>
-      )}
+<p style={{ color: "#888", marginBottom: "10px" }}>
+  {fights.length} fights found
+</p>
 
-      {fights.map((f, i) => (
-        <div className="card" key={i}>
-          <div>
-            <strong>{f.red}</strong> vs <strong>{f.blue}</strong>
-            <div className="meta">
-              {f.division} · Round {f.round}
+      {/* RESULTS */}
+      {loading ? (
+        <p style={{ color: "#888" }}>Loading fights…</p>
+      ) : fights.length === 0 ? (
+        <p style={{ color: "#888" }}>
+  No fights have been added for this event yet.
+</p>
+
+      ) : (
+        fights.map((f, i) => (
+          <div key={i} className="fight-card">
+            <div className="fight-title">
+              <span onClick={() => setSelectedFighter(f.red)}>
+                {f.red}
+              </span>
+              {" vs "}
+              <span onClick={() => setSelectedFighter(f.blue)}>
+                {f.blue}
+              </span>
+            </div>
+
+            <div className="fight-meta">
+              {f.division} • {f.method} (R{f.round})
             </div>
           </div>
-
-          <div className="meta">
-            Winner: {f.winner} ({f.method})
-          </div>
-        </div>
-      ))}
+        ))
+      )}
     </div>
   );
 }
