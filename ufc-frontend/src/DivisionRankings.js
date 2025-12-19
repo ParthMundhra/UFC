@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import FighterProfile from "./FighterProfile";
+import API_BASE from "./api";
+
 
 const divisions = [
   "Lightweight",
@@ -20,7 +22,7 @@ function DivisionRankings() {
 
   useEffect(() => {
     setLoading(true);
-    fetch(`http://127.0.0.1:8000/rankings/division/${division}`)
+    fetch(`${API_BASE}/rankings/division/${division}`)
       .then((res) => res.json())
       .then((data) => {
         setRankings(data);

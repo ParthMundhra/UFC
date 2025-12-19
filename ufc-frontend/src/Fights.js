@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import FighterProfile from "./FighterProfile";
 
+import API_BASE from "./api";
+
+
 function Fights() {
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState("");
@@ -10,7 +13,7 @@ function Fights() {
 
   // ---------------- LOAD EVENTS ----------------
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/events")
+    fetch(`${API_BASE}/events`)
       .then((res) => res.json())
       .then(setEvents)
       .catch(() => setEvents([]));
@@ -20,7 +23,7 @@ function Fights() {
   useEffect(() => {
     setLoading(true);
 
-    let url = "http://127.0.0.1:8000/fights";
+    let url = `${API_BASE}/fights`;
     if (selectedEvent) {
       url += `?event=${encodeURIComponent(selectedEvent)}`;
     }

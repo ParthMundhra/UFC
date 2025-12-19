@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
+import API_BASE from "./api";
+
 
 function Fighters() {
   const [fighters, setFighters] = useState([]);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/fighters")
+    fetch(`${API_BASE}/fighters`)
       .then((res) => res.json())
       .then((data) => setFighters(data))
       .catch((err) => console.error(err));

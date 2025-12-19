@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { cache } from "./cache";
+import API_BASE from "./api";
 
 function FighterProfile({ fighter, onBack }) {
   const [data, setData] = useState(null);
@@ -10,7 +11,7 @@ function FighterProfile({ fighter, onBack }) {
   useEffect(() => {
     setLoading(true);
 
-    fetch(`http://127.0.0.1:8000/fighters/${fighter}`)
+    fetch(`${API_BASE}/${fighter}`)
       .then((res) => res.json())
       .then((d) => {
         setData(d);
@@ -29,7 +30,7 @@ function FighterProfile({ fighter, onBack }) {
       return;
     }
 
-    fetch(`http://127.0.0.1:8000/fighter-image/${fighter}`)
+    fetch(`${API_BASE}/fighter-image/${fighter}`)
       .then((res) => res.json())
       .then((d) => {
         cache.fighterImages[fighter] = d.image;
